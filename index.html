@@ -1,284 +1,161 @@
-<!--
-Single-file HTML header for a D&D-aware multiplayer game website.
-Copy & paste the <header>...</header> part into your site's header area, or use the whole file as a standalone demo page.
-Features:
-- Responsive, modern header with logo, nav, and a smart search box
-- Local embeddable DnD knowledge base (sample entries). Replace `dndData` with full SRD JSON or an API endpoint.
-- Instant info card with details (spells, monsters, items), keyboard shortcut (/), fuzzy search, and filter chips
-- Accessible and keyboard-friendly
-
-How to use:
-1) Paste the whole file into a .html for a demo, or copy only the <header>...</header> into your site's header.
-2) Replace or augment `dndData` in the <script> with your own dataset or fetch from an API.
-3) Customize styles or icons as desired.
--->
-
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>DnD Game Header — Knowledge Header</title>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <title>Multiplayer DnD</title>
   <style>
-    :root{
-      --bg: #0f1724; /* deep slate */
-      --card: #0b1220;
-      --muted: #97a0b5;
-      --accent: #ef9a48;
-      --glass: rgba(255,255,255,0.04);
-      --glass-strong: rgba(255,255,255,0.06);
-      --radius: 12px;
-      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
-    }
-    *{box-sizing:border-box}
-    body{margin:0;background:linear-gradient(180deg,#071124 0%, #081426 100%);color:#e6eef8;min-height:100vh}
-
-    /* Header */
-    header.app-header{display:flex;align-items:center;gap:18px;padding:14px 20px;background:linear-gradient(90deg, rgba(255,255,255,0.02), transparent);backdrop-filter: blur(6px)}
-    .brand{display:flex;align-items:center;gap:12px}
-    .logo{width:46px;height:46px;border-radius:10px;background:linear-gradient(135deg,#ffcc66,#ff8a3d);display:flex;align-items:center;justify-content:center;font-weight:800;color:#082;box-shadow:0 6px 20px rgba(0,0,0,0.6)}
-    .brand h1{font-size:16px;margin:0;line-height:1}
-    .brand p{margin:0;font-size:12px;color:var(--muted)}
-
-    nav{margin-left:6px}
-    nav a{color:var(--muted);text-decoration:none;margin-right:12px;font-size:13px}
-
-    /* Search */
-    .search-wrap{flex:1;display:flex;align-items:center;gap:12px}
-    .search{flex:1;display:flex;align-items:center;background:var(--glass);padding:10px;border-radius:12px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.02)}
-    .search input{flex:1;background:transparent;border:0;color:inherit;font-size:14px;outline:none}
-    .chip{padding:6px 8px;border-radius:999px;background:transparent;border:1px solid rgba(255,255,255,0.04);font-size:12px;color:var(--muted);cursor:pointer}
-
-    .actions{display:flex;gap:10px;align-items:center}
-    .icon-btn{display:inline-flex;align-items:center;justify-content:center;padding:8px;border-radius:10px;background:var(--glass);border:1px solid rgba(255,255,255,0.02);cursor:pointer}
-
-    /* Results dropdown */
-    .results{position:absolute;left:20px;right:20px;top:74px;max-width:1200px;margin:auto;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:14px;padding:10px;box-shadow:0 10px 30px rgba(4,10,20,0.6);z-index:80}
-    .results-grid{display:grid;grid-template-columns:1fr 320px;gap:12px}
-    .list{max-height:320px;overflow:auto;padding:6px}
-    .item{display:flex;gap:12px;padding:8px;border-radius:10px;align-items:center;cursor:pointer}
-    .item:hover{background:var(--glass-strong)}
-    .thumb{width:52px;height:52px;border-radius:10px;background:linear-gradient(135deg,#26314a,#1b2a41);display:flex;align-items:center;justify-content:center;font-weight:700}
-    .meta{font-size:13px}
-    .meta small{color:var(--muted);display:block}
-
-    /* Info card */
-    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:12px;padding:12px;min-height:140px}
-    .card h3{margin:0 0 4px 0}
-    .card p{margin:0;color:var(--muted);font-size:13px}
-    .stat-row{display:flex;gap:12px;margin-top:10px}
-    .stat{background:rgba(255,255,255,0.02);padding:6px 8px;border-radius:8px;font-size:13px}
-
-    /* Mobile adjustments */
-    @media (max-width:720px){
-      .results{left:12px;right:12px;top:86px}
-      .results-grid{grid-template-columns:1fr}
-      .brand p{display:none}
-    }
-
-    /* Small helper */
-    .hint{font-size:12px;color:var(--muted)}
-    .muted{color:var(--muted)}
+    :root{--accent:#7c3aed;--muted:#6b7280}
+    body{font-family:Inter,ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial; margin:0;background:#0f172a;color:#e6eef8}
+    header{background:linear-gradient(90deg,#0b1220,#081328);padding:12px 20px;display:flex;align-items:center;gap:12px}
+    .logo{font-weight:700;color:var(--accent)}
+    .container{padding:20px;display:grid;grid-template-columns:320px 1fr;gap:16px}
+    .card{background:#071029;border:1px solid rgba(255,255,255,0.03);padding:12px;border-radius:8px}
+    input,button,select{background:#071229;color:#e6eef8;border:1px solid rgba(255,255,255,0.04);padding:8px;border-radius:6px}
+    button{cursor:pointer}
+    .small{font-size:13px;color:var(--muted)}
+    #mapCanvas{width:100%;height:420px;background:#020617;border-radius:6px}
+    .messages{height:240px;overflow:auto;padding:8px;background:#050818;border-radius:6px}
+    details{padding:6px}
+    footer{padding:12px;text-align:center;color:var(--muted)}
+    @media(max-width:900px){.container{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
-
-<header class="app-header" role="banner">
-  <div class="brand" aria-hidden="false">
-    <div class="logo" title="DM">D</div>
+  <header>
     <div>
-      <h1>Adventure Hub</h1>
-      <p>DnD Companion • Search spells, monsters & items</p>
+      <div class="logo">Multiplayer DnD</div>
+      <div class="small">Single-file frontend (paste directly to GitHub)</div>
     </div>
-  </div>
+    <div id="youInfo" class="small" style="margin-left:auto"></div>
+  </header>
 
-  <nav aria-label="primary">
-    <a href="#">Play</a>
-    <a href="#">Campaigns</a>
-    <a href="#">Rules</a>
-    <a href="#">Community</a>
-  </nav>
-
-  <div class="search-wrap" style="position:relative;">
-    <div class="search" role="search">
-      <span class="hint" style="margin-right:8px">🔎</span>
-      <input id="searchInput" placeholder="Search spells, monsters, items — press / to focus" aria-label="Search DnD knowledge" />
-      <button class="chip" data-filter="all" aria-pressed="true">All</button>
-      <button class="chip" data-filter="spells">Spells</button>
-      <button class="chip" data-filter="monsters">Monsters</button>
-      <button class="chip" data-filter="items">Items</button>
-    </div>
-
-    <div class="actions">
-      <div class="icon-btn" id="helpBtn" title="Search tips">?</div>
-      <button class="icon-btn" id="loginBtn">Sign in</button>
-    </div>
-
-    <!-- results dropdown -->
-    <div id="results" class="results" style="display:none;" role="dialog" aria-live="polite">
-      <div class="results-grid">
-        <div class="list" id="list">
-          <!-- dynamically filled -->
-        </div>
-        <div class="card" id="infoPane">
-          <h3>Search results</h3>
-          <p class="muted">Select an entry to see details here. Tip: try "fireball", "goblin", or "+longsword"</p>
-        </div>
+  <div class="container">
+    <aside>
+      <div class="card">
+        <h3>Lobbies</h3>
+        <input id="displayName" placeholder="Your name"><button id="setNameBtn">Set</button><br><br>
+        <input id="lobbyCodeInput" placeholder="Lobby code"><button id="joinLobbyBtn">Join</button><br><br>
+        <button id="createLobbyBtn">Create Lobby</button><button id="leaveLobbyBtn">Leave</button><br><br>
+        <div class="small">Current lobby: <span id="currentLobby">—</span></div>
       </div>
-    </div>
+
+      <div class="card" style="margin-top:12px">
+        <h4>Dice</h4>
+        <button id="rollD20">Roll d20</button>
+        <button id="roll2d6">Roll 2d6</button>
+        <div>Result: <span id="diceResult">—</span></div>
+      </div>
+
+      <div class="card" style="margin-top:12px">
+        <h4>Weapon Creator</h4>
+        <input id="wpnName" placeholder="Name"><br>
+        <input id="wpnDice" placeholder="Dice (e.g. 1d8)"><br>
+        <select id="wpnProf"><option>Simple</option><option>Martial</option></select><br>
+        <button id="saveWpn">Save</button><button id="listWpn">List</button>
+        <pre id="weaponsList" class="small"></pre>
+      </div>
+
+      <div class="card" style="margin-top:12px">
+        <details open>
+          <summary>Host Panel</summary>
+          <div id="hostPanelArea">
+            <button id="startGameBtn">Start Game</button>
+            <button id="endGameBtn">End</button>
+            <div class="small" id="playersList"></div>
+          </div>
+        </details>
+      </div>
+    </aside>
+
+    <main>
+      <div class="card">
+        <h3>Map Generator</h3>
+        <input id="mapW" type="number" value="16" style="width:80px">
+        <input id="mapH" type="number" value="12" style="width:80px">
+        <button id="genMap">Generate</button>
+        <button id="shareMap">Share to Lobby</button>
+        <canvas id="mapCanvas"></canvas>
+      </div>
+
+      <div class="card" style="margin-top:12px">
+        <h3>Chat</h3>
+        <div class="messages" id="chatMessages"></div>
+        <input id="chatInput" placeholder="Say something..."><button id="sendMsgBtn">Send</button>
+        <h4>Lobby Weapons</h4>
+        <pre id="lobbyWeapons" class="small"></pre>
+      </div>
+    </main>
   </div>
-</header>
 
-<main style="padding:20px;">
-  <h2 style="margin-top:0">Page content below</h2>
-  <p class="muted">This is a demo page showing the header in context. Replace the `dndData` array in the script with your full dataset or an API fetch for real usage.</p>
-</main>
+  <footer class="small">
+    Replace <code>firebaseConfig</code> below with your Firebase credentials, then enable Anonymous Auth + Realtime DB.
+  </footer>
 
-<script>
-/*
-Example data model. Each entry has:
-- id, type: 'spell'|'monster'|'item'
-- name, level (if applicable), cr (challenge rating), source, desc, tags
-Replace or fetch an authoritative SRD or your campaign DB.
-*/
-const dndData = [
-  {id:1,type:'spell',name:'Fireball',level:3,school:'Evocation',desc:'A bright streak flashes...explodes.',source:'SRD',tags:['damage','area']},
-  {id:2,type:'monster',name:'Goblin',cr:0.25,desc:'Small humanoid, clever and sneaky.',source:'SRD',tags:['humanoid']},
-  {id:3,type:'item',name:'Longsword',rarity:'Common',desc:'Versatile melee weapon.',source:'SRD',tags:['weapon','melee']},
-  {id:4,type:'spell',name:'Healing Word',level:1,school:'Evocation',desc:'A creature regains hit points.',source:'SRD',tags:['healing']},
-  {id:5,type:'monster',name:'Adult Red Dragon',cr:17,desc:'Huge dragon, fearsome breath weapon.',source:'SRD',tags:['dragon','legendary']}
-];
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.24.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.24.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.24.0/firebase-database-compat.js"></script>
 
-// Quick helpers
-const searchInput = document.getElementById('searchInput');
-const resultsEl = document.getElementById('results');
-const listEl = document.getElementById('list');
-const infoPane = document.getElementById('infoPane');
-let activeFilter = 'all';
+  <script>
+  const firebaseConfig = {
+    apiKey: "REPLACE_ME",
+    authDomain: "REPLACE_ME",
+    databaseURL: "REPLACE_ME",
+    projectId: "REPLACE_ME",
+    storageBucket: "REPLACE_ME",
+    messagingSenderId: "REPLACE_ME",
+    appId: "REPLACE_ME"
+  };
 
-// Keyboard shortcut: focus search with '/'
-window.addEventListener('keydown', (e)=>{
-  if(e.key === '/' && document.activeElement !== searchInput){
-    e.preventDefault();
-    searchInput.focus();
-    searchInput.select();
+  firebase.initializeApp(firebaseConfig);
+  const auth=firebase.auth(),db=firebase.database();
+  let myId=null,myName='',currentLobby=null,isHost=false,listeners=[];
+  auth.signInAnonymously().then(cred=>{myId=cred.user.uid;setInfo('you:'+myId.slice(0,6))});
+
+  const el=id=>document.getElementById(id);
+  function setInfo(t){el('youInfo').innerText=t;}
+  function randCode(len=6){return Array.from({length:len},()=>\"ABCDEFGHJKMNPQRSTUVWXYZ23456789\"[Math.floor(Math.random()*32)]).join('');}
+
+  el('setNameBtn').onclick=()=>{myName=el('displayName').value||('Guest-'+myId.slice(0,4));setInfo('you:'+myName);}
+  el('createLobbyBtn').onclick=async()=>{const code=randCode();await db.ref('lobbies/'+code).set({host:myId,hostName:myName||'Host'});joinLobby(code);}
+  el('joinLobbyBtn').onclick=()=>{const code=el('lobbyCodeInput').value.trim().toUpperCase();if(code)joinLobby(code);}
+  el('leaveLobbyBtn').onclick=()=>{if(!currentLobby)return;db.ref('lobbies/'+currentLobby+'/players/'+myId).remove();detach();resetUI();}
+
+  async function joinLobby(code){
+    const ref=db.ref('lobbies/'+code);const s=await ref.get();if(!s.exists())return alert('Lobby not found');
+    currentLobby=code;isHost=(s.val().host===myId);el('currentLobby').innerText=code;
+    await db.ref('lobbies/'+code+'/players/'+myId).set({name:myName||'Guest'});
+    attach(code);
   }
-});
+  function resetUI(){currentLobby=null;el('currentLobby').innerText='—';isHost=false;el('playersList').innerText='';}
+  function attach(code){
+    const p=db.ref('lobbies/'+code+'/players');p.on('value',s=>{const v=s.val()||{};el('playersList').innerText=Object.values(v).map(x=>x.name).join(', ')});listeners.push(p);
+    const c=db.ref('lobbies/'+code+'/chat');c.on('child_added',s=>addMsg(s.val()));listeners.push(c);
+    const m=db.ref('lobbies/'+code+'/map');m.on('value',s=>{const v=s.val();if(v)draw(v.grid)});listeners.push(m);
+    const w=db.ref('lobbies/'+code+'/weapons');w.on('value',s=>{const v=s.val()||{};el('lobbyWeapons').innerText=Object.values(v).map(x=>x.name+': '+x.dice).join('\\n')});listeners.push(w);
+  }
+  function detach(){listeners.forEach(r=>r.off());listeners=[];}
 
-// Chip filter behavior
-document.querySelectorAll('.chip').forEach(chip=>{
-  chip.addEventListener('click', ()=>{
-    document.querySelectorAll('.chip').forEach(c=>c.setAttribute('aria-pressed','false'));
-    chip.setAttribute('aria-pressed','true');
-    activeFilter = chip.dataset.filter;
-    doSearch(searchInput.value.trim());
-  });
-});
+  function addMsg(m){const d=document.createElement('div');d.innerHTML='<b>'+m.from+'</b>: '+m.text;el('chatMessages').appendChild(d);el('chatMessages').scrollTop=9999;}
+  el('sendMsgBtn').onclick=()=>sendMsg();
+  el('chatInput').onkeydown=e=>{if(e.key==='Enter')sendMsg();}
+  function sendMsg(){if(!currentLobby)return alert('Join a lobby');const t=el('chatInput').value.trim();if(!t)return;db.ref('lobbies/'+currentLobby+'/chat').push({from:myName||'Guest',text:t});el('chatInput').value='';}
 
-searchInput.addEventListener('input', (e)=>{
-  doSearch(e.target.value.trim());
-});
+  el('rollD20').onclick=()=>el('diceResult').innerText=Math.floor(Math.random()*20)+1;
+  el('roll2d6').onclick=()=>{const a=Math.floor(Math.random()*6)+1,b=Math.floor(Math.random()*6)+1;el('diceResult').innerText=a+b+' ('+a+','+b+')';}
 
-searchInput.addEventListener('focus', ()=>{
-  if(listEl.children.length>0) resultsEl.style.display='block';
-});
+  el('saveWpn').onclick=()=>{if(!currentLobby)return;const n=el('wpnName').value,d=el('wpnDice').value,p=el('wpnProf').value;if(!n||!d)return;db.ref('lobbies/'+currentLobby+'/weapons').push({name:n,dice:d,prof:p});}
+  el('listWpn').onclick=async()=>{if(!currentLobby)return;const s=await db.ref('lobbies/'+currentLobby+'/weapons').get();const v=s.val()||{};el('weaponsList').innerText=Object.values(v).map(x=>x.name+'('+x.dice+')').join('\\n');}
 
-searchInput.addEventListener('blur', ()=>{
-  // small delay so clicks register
-  setTimeout(()=>{ if(!resultsEl.contains(document.activeElement)) resultsEl.style.display='none'; },180);
-});
+  const ctx=el('mapCanvas').getContext('2d');
+  function randMap(w,h){return Array.from({length:h},()=>Array.from({length:w},()=>Math.random()<0.7?0:(Math.random()<0.9?1:2)));}
+  function draw(g){const w=g[0].length,h=g.length,cell=Math.min(Math.floor(el('mapCanvas').clientWidth/w),Math.floor(el('mapCanvas').clientHeight/h));el('mapCanvas').width=w*cell;el('mapCanvas').height=h*cell;for(let y=0;y<h;y++)for(let x=0;x<w;x++){ctx.fillStyle=['#052136','#38505f','#a07b3a'][g[y][x]];ctx.fillRect(x*cell,y*cell,cell,cell);}}
+  el('genMap').onclick=()=>{const w=+el('mapW').value,h=+el('mapH').value;window._map=randMap(w,h);draw(window._map);}
+  el('shareMap').onclick=()=>{if(currentLobby&&window._map)db.ref('lobbies/'+currentLobby+'/map').set({grid:window._map});}
 
-// Simple fuzzy search: tokenize, score by token matches, prefer startsWith, boost exact type prefix (+spell, +monster, +item)
-function doSearch(q){
-  if(!q){ listEl.innerHTML=''; infoPane.innerHTML=`<h3>Search results</h3><p class="muted">Type to search. Try "fireball", "goblin", or use +spell / +monster / +item to filter.</p>`; resultsEl.style.display='none'; return; }
-
-  resultsEl.style.display='block';
-  const typePrefix = (q.match(/^\+(spell|monster|item)\b/i)||[])[1];
-  const raw = typePrefix ? q.replace(/^\+\w+\s*/,'') : q;
-  const tokens = raw.toLowerCase().split(/\s+/).filter(Boolean);
-
-  const candidates = dndData.filter(d=>{
-    if(typePrefix && d.type !== (typePrefix==='spell'?'spell':typePrefix)) return false;
-    if(activeFilter !== 'all' && d.type !== activeFilter) return false;
-    return true;
-  }).map(d => {
-    // score
-    let score = 0;
-    const name = d.name.toLowerCase();
-    tokens.forEach(t=>{
-      if(name === t) score += 100; // exact
-      else if(name.startsWith(t)) score += 40;
-      else if(name.includes(t)) score += 18;
-      // match in description or tags
-      if((d.desc||'').toLowerCase().includes(t)) score += 6;
-      if((d.tags||[]).some(tag=>tag.includes(t))) score += 12;
-    });
-    // boost by type preference
-    if(d.type==='spell') score += 2;
-    return {...d,score};
-  }).filter(d=>d.score>0).sort((a,b)=>b.score - a.score).slice(0,50);
-
-  // Render
-  listEl.innerHTML = candidates.map(c => `
-    <div class="item" tabindex="0" data-id="${c.id}" data-type="${c.type}">
-      <div class="thumb">${escapeHtml(c.name.split(' ')[0].slice(0,2))}</div>
-      <div style="flex:1">
-        <div class="meta"><strong>${escapeHtml(c.name)}</strong> <small class="muted">${escapeHtml(titleOf(c))}</small></div>
-        <div class="muted" style="font-size:13px">${escapeHtml(shorten(c.desc,80))}</div>
-      </div>
-    </div>
-  `).join('');
-
-  // click binding
-  Array.from(listEl.children).forEach(el=>{
-    el.addEventListener('click', ()=>{
-      const id = Number(el.dataset.id);
-      selectEntry(id);
-    });
-    el.addEventListener('keydown', (e)=>{ if(e.key==='Enter') el.click(); });
-  });
-}
-
-function titleOf(c){
-  if(c.type==='spell') return `Spell • level ${c.level || '—'} • ${c.school || ''}`;
-  if(c.type==='monster') return `Monster • CR ${c.cr || '—'}`;
-  return `Item • ${c.rarity || '—'}`;
-}
-
-function selectEntry(id){
-  const entry = dndData.find(d=>d.id===id);
-  if(!entry) return;
-  infoPane.innerHTML = `
-    <h3>${escapeHtml(entry.name)}</h3>
-    <p class="muted">${escapeHtml(titleOf(entry))} • ${escapeHtml(entry.source||'Unknown')}</p>
-    <p style="margin-top:8px">${escapeHtml(entry.desc || 'No description available.')}</p>
-    <div class="stat-row">
-      ${entry.type==='monster'?`<div class="stat">CR: ${escapeHtml(String(entry.cr||'—'))}</div>`:''}
-      ${entry.type==='spell'?`<div class="stat">Level: ${escapeHtml(String(entry.level||'—'))}</div>`:''}
-      <div class="stat">Type: ${escapeHtml(entry.type)}</div>
-      <div class="stat">Tags: ${escapeHtml((entry.tags||[]).join(', ')||'—')}</div>
-    </div>
-  `;
-}
-
-function shorten(s,n){ if(!s) return ''; return s.length>n? s.slice(0,n-1)+'…': s; }
-function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-// initial placeholder
-doSearch('');
-
-/*
-HOW TO PLUG A LARGER DATASET:
-1) Replace dndData with a big array. Example: const dndData = await fetch('/data/srd.json').then(r=>r.json())
-2) Or implement a server endpoint that returns search results; change doSearch to call that endpoint when q.length > 2.
-
-Notes on "knowing everything":
-- This header uses your dataset. To have it "know everything" about DnD, feed it an authoritative SRD dataset, or connect to a remote knowledge API (your own game DB, open5e, or a private SRD mirror). For accurate rules/legal use, check the SRD license and content ownership.
-*/
-
-</script>
-
+  el('startGameBtn').onclick=()=>{if(!isHost)return;db.ref('lobbies/'+currentLobby+'/meta').set({state:'started'});}
+  el('endGameBtn').onclick=()=>{if(!isHost)return;db.ref('lobbies/'+currentLobby).remove();resetUI();detach();}
+  </script>
 </body>
 </html>
